@@ -38,6 +38,7 @@ export default function Raiz() {
           <Stack.Screen name="nuevo" options={{ gestureEnabled: false }} />
           <Stack.Screen name="generacion/[id]" />
           <Stack.Screen name="propuesta/[id]" />
+          <Stack.Screen name="ajustar/[id]" />
           <Stack.Screen name="espacio/nuevo" />
           <Stack.Screen name="espacio/[id]" />
           <Stack.Screen name="proyecto/[id]" />

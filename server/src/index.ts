@@ -6,6 +6,7 @@ import { manejarErrores } from "./errores.ts";
 import { recuperarInterrumpidas } from "./lib/generacion.ts";
 import { requiereDispositivo, requiereSesion } from "./rutas/dispositivo.ts";
 import { cuentas } from "./rutas/cuentas.ts";
+import { ajustes } from "./rutas/ajustes.ts";
 import { general } from "./rutas/general.ts";
 import { fotos } from "./rutas/fotos.ts";
 import { espacios } from "./rutas/espacios.ts";
@@ -36,7 +37,7 @@ api.use(requiereDispositivo);
 api.use(cuentas);
 // Todo lo demás es de la cuenta: sin sesión iniciada no se puede ver ni crear nada.
 api.use(requiereSesion);
-api.use(general, fotos, espacios, generaciones, proyectos);
+api.use(general, fotos, espacios, generaciones, proyectos, ajustes);
 api.use((_req, res) => {
   res.status(404).json({ error: { codigo: "ruta", mensaje: "Esa ruta no existe" } });
 });

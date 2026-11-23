@@ -60,7 +60,7 @@ export function ubicarPropuesta(p: FilaPropuesta, esp: FilaEspacio & { foto_url:
 const LADO_MAYOR_EDICION = 1024;
 
 /** Medida de salida que conserva la proporción de la foto, en múltiplos de 16 (lo pide el modelo). */
-function medidaEdicion(w: number, h: number) {
+export function medidaEdicion(w: number, h: number) {
   const k = LADO_MAYOR_EDICION / Math.max(w, h);
   const m16 = (n: number) => Math.max(256, Math.round((n * k) / 16) * 16);
   return { ancho: m16(w), alto: m16(h) };

@@ -113,6 +113,21 @@ db.exec(`
   );
 `);
 
+// Chat "Ajustar con IA": cada mensaje de la persona, la respuesta y la imagen que resultó.
+// La imagen vigente de la propuesta es la de la última edición; deshacer borra la última.
+db.exec(`
+  CREATE TABLE IF NOT EXISTS ediciones (
+    id            INTEGER PRIMARY KEY,
+    propuesta_id  INTEGER NOT NULL REFERENCES propuestas(id) ON DELETE CASCADE,
+    mensaje       TEXT NOT NULL,
+    respuesta     TEXT NOT NULL,
+    imagen_url    TEXT,
+    creado        TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+`);
+// Antes del primer ajuste se guarda la imagen original en la foto, para poder volver a ella.
+if (!columnas("propuestas").includes("en_espacio_original_url")) db.exec("ALTER TABLE propuestas ADD COLUMN en_espacio_original_url TEXT");
+
 if (!columnas("generaciones").includes("foto_ordenada_url")) db.exec("ALTER TABLE generaciones ADD COLUMN foto_ordenada_url TEXT");
 if (!columnas("generaciones").includes("recomendacion")) db.exec("ALTER TABLE generaciones ADD COLUMN recomendacion TEXT");
 if (!columnas("espacios").includes("marcas")) db.exec("ALTER TABLE espacios ADD COLUMN marcas TEXT");

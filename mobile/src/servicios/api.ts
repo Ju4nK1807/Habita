@@ -3,7 +3,7 @@ import { File as ArchivoLocal } from "expo-file-system";
 import { idDispositivo } from "./dispositivo";
 import { useSesion, type Cuenta } from "@/store/sesion";
 import type {
-  Catalogos, Creditos, Espacio, EspacioNuevo, Generacion, Movimiento, PedidoGeneracion, Propuesta, Proyecto, Analisis,
+  Ajustes, Catalogos, Creditos, Espacio, MensajeAjuste, EspacioNuevo, Generacion, Movimiento, PedidoGeneracion, Propuesta, Proyecto, Analisis,
 } from "./tipos";
 
 export const URL_BASE = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/$/, "");
@@ -97,6 +97,11 @@ export const api = {
   cancelarGeneracion: (id: number) =>
     pedir<{ id: number; estado: string; saldo: number }>(`/generaciones/${id}/cancelar`, { method: "POST" }),
   propuesta: (id: number) => pedir<Propuesta>(`/propuestas/${id}`),
+  ajustes: (id: number) => pedir<Ajustes>(`/propuestas/${id}/ajustes`),
+  // La IA tarda entre 5 y 20 s en ajustar la imagen.
+  ajustar: (id: number, mensaje: string) =>
+    pedir<MensajeAjuste>(`/propuestas/${id}/ajustes`, { method: "POST", body: json({ mensaje }), timeoutMs: 120_000 }),
+  deshacerAjuste: (id: number) => pedir<Ajustes>(`/propuestas/${id}/ajustes/deshacer`, { method: "POST" }),
   verEnEspacio: (id: number, posicion: number) =>
     pedir<{ enEspacioUrl: string }>(`/propuestas/${id}/en-espacio`, { method: "POST", body: json({ posicion }), timeoutMs: 120_000 }),
 

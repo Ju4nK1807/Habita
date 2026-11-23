@@ -147,7 +147,11 @@ export type Proyecto = {
   propuestas?: Propuesta[];
 };
 
-export type Creditos = { saldo: number; recargaHasta: number; proximaRecarga: string | null };
+/** Un mensaje del chat "Ajustar con IA": lo que pidió la persona, la respuesta y la imagen que resultó. */
+export type MensajeAjuste = { id: number; mensaje: string; respuesta: string; imagenUrl: string | null; creado: string };
+export type Ajustes = { ajustes: MensajeAjuste[]; maximo: number };
+
+export type Creditos ={ saldo: number; recargaHasta: number; proximaRecarga: string | null };
 
 export type Movimiento = {
   id: number;

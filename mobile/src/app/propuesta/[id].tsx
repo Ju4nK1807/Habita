@@ -3,7 +3,7 @@ import { Linking, Pressable, ScrollView, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { BookmarkPlus, Check, ChevronDown, ChevronLeft, ChevronUp, ExternalLink, Frame, ImageOff, Plus, ShoppingBag } from "lucide-react-native";
+import { BookmarkPlus, Check, ChevronDown, ChevronLeft, ChevronUp, ExternalLink, Frame, ImageOff, MessageCircle, Plus, ShoppingBag } from "lucide-react-native";
 import { api, ErrorApi, urlArchivo } from "@/servicios/api";
 import { useConsulta } from "@/hooks/useConsulta";
 import { useTema } from "@/theme/tema";
@@ -91,6 +91,17 @@ export default function Detalle() {
                   <Texto variante="labelSm" color="accentInk">POR QUÉ LE QUEDA</Texto>
                   <Texto variante="bodyMd">{p.porQue}</Texto>
                 </View>
+              ) : null}
+
+              {p.imagenUrl ? (
+                <Boton
+                  titulo="Ajustar con IA"
+                  icono={MessageCircle}
+                  variante="acento"
+                  onPress={() => router.push(`/ajustar/${p.id}`)}
+                  accessibilityHint="Abre un chat para pedir cambios en la imagen: color, lo que estorba, posición"
+                  ancho
+                />
               ) : null}
 
               <View style={{ flexDirection: "row", alignItems: "flex-end", justifyContent: "space-between", gap: espacio.s12, flexWrap: "wrap" }}>
