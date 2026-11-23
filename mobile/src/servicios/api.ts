@@ -1,6 +1,7 @@
 // Única capa que habla con el backend. Las pantallas nunca llaman a fetch directamente.
 import { File as ArchivoLocal } from "expo-file-system";
 import { idDispositivo } from "./dispositivo";
+import { useSesion, type Cuenta } from "@/store/sesion";
 import type {
   Catalogos, Creditos, Espacio, EspacioNuevo, Generacion, Movimiento, PedidoGeneracion, Propuesta, Proyecto, Analisis,
 } from "./tipos";
@@ -26,6 +27,8 @@ async function pedir<T>(ruta: string, init: RequestInit & { timeoutMs?: number }
   if (!URL_BASE) throw new ErrorApi("Falta configurar la dirección del servidor (EXPO_PUBLIC_API_URL)", "sin_configurar", 0);
   const headers = new Headers(init.headers);
   headers.set("X-Dispositivo", await idDispositivo());
+  const token = useSesion.getState().token;
+  if (token) headers.set("Authorization", `Bearer ${token}`);
   if (init.body && !(init.body instanceof FormData)) headers.set("Content-Type", "application/json");
 
   // AbortSignal.timeout no está garantizado en Hermes: se arma a mano.
@@ -44,6 +47,8 @@ async function pedir<T>(ruta: string, init: RequestInit & { timeoutMs?: number }
   const cuerpo = await r.json().catch(() => null);
   if (!r.ok) {
     const e = cuerpo?.error;
+    // Sesión vencida o cerrada en otro lado: se vuelve a la pantalla de ingreso.
+    if (r.status === 401 && e?.codigo === "sin_sesion") void useSesion.getState().salir();
     throw new ErrorApi(e?.mensaje ?? "Algo falló en el servidor. Intente de nuevo", e?.codigo ?? "desconocido", r.status);
   }
   return cuerpo as T;
@@ -56,6 +61,13 @@ export const urlArchivo = (ruta: string | null | undefined) => (ruta ? `${URL_BA
 
 export const api = {
   salud: () => pedir<{ ok: true }>("/salud", { timeoutMs: 5_000 }),
+
+  registrarse: (nombre: string, correo: string, clave: string) =>
+    pedir<{ token: string; cuenta: Cuenta }>("/cuentas/registro", { method: "POST", body: json({ nombre, correo, clave }) }),
+  ingresar: (correo: string, clave: string) =>
+    pedir<{ token: string; cuenta: Cuenta }>("/cuentas/ingreso", { method: "POST", body: json({ correo, clave }) }),
+  cerrarSesion: () => pedir<void>("/cuentas/salida", { method: "POST" }),
+
   catalogos: () => pedir<Catalogos>("/catalogos"),
 
   creditos: () => pedir<Creditos>("/creditos"),
