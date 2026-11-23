@@ -54,4 +54,4 @@ proyectos y créditos pertenecen a la cuenta, así que se ven desde cualquier te
 - La sesión es un token aleatorio; en el teléfono vive en el llavero (SecureStore) y en el servidor
   solo se guarda su hash.
 - Tras 5 intentos fallidos con el mismo correo hay que esperar 5 minutos.
-- Al crear la cuenta, se queda con lo que ya se había hecho desde ese teléfono.
+- Cada cuenta nueva empieza vacía, con 10 créditos de bienvenida.
