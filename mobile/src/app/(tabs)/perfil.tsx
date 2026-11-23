@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Alert, Pressable, ScrollView, View } from "react-native";
 import { router } from "expo-router";
-import { ChevronRight, Coins } from "lucide-react-native";
+import { ChevronRight, Coins, LogOut } from "lucide-react-native";
 import { api, URL_BASE } from "@/servicios/api";
 import { useConsulta } from "@/hooks/useConsulta";
 import { useTema } from "@/theme/tema";
 import { espacio, margen, radio } from "@/theme/tokens";
 import { usePreferencias, type Moneda, type Tema, type Unidades } from "@/store/preferencias";
+import { useSesion } from "@/store/sesion";
+import { useBorrador } from "@/store/borrador";
 import { fechaCorta, plural } from "@/lib/formato";
 import { Pantalla } from "@/componentes/Pantalla";
 import { BarraSuperior } from "@/componentes/BarraSuperior";
@@ -16,6 +18,7 @@ import { Chip, GrupoChips } from "@/componentes/Chip";
 import { CampoTexto } from "@/componentes/CampoTexto";
 import { Aviso } from "@/componentes/Aviso";
 import { Esqueleto } from "@/componentes/Esqueleto";
+import { Boton } from "@/componentes/Boton";
 
 export default function Perfil() {
   const { c } = useTema();
@@ -32,7 +35,7 @@ export default function Perfil() {
   return (
     <Pantalla teclado>
       <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: espacio.s48 }}>
-        <BarraSuperior variante="expandida" titulo="Perfil" subtitulo="Créditos, unidades y apariencia" />
+        <BarraSuperior variante="expandida" titulo="Perfil" subtitulo="Cuenta, créditos y apariencia" />
         <View style={{ paddingHorizontal: margen.lateral, gap: margen.secciones, marginTop: espacio.s8 }}>
           {error ? <Aviso tipo={error.sinConexion ? "sinConexion" : "error"} mensaje={error.message} accion={{ texto: "Reintentar", onPress: recargar }} /> : null}
 
@@ -101,12 +104,47 @@ export default function Perfil() {
             {opciones<Moneda>([["COP", "Pesos (COP)"], ["USD", "Dólares (USD)"]], prefs.moneda, (moneda) => prefs.cambiar({ moneda }))}
           </Bloque>
 
+          <SuCuenta />
+
           <Bloque titulo="Servidor">
             <Texto variante="bodySm" color="ink600" selectable>{URL_BASE || "Sin configurar"}</Texto>
           </Bloque>
         </View>
       </ScrollView>
     </Pantalla>
+  );
+}
+
+/** Quién inició sesión y cómo salir. Al salir se borra lo que quedó a medias en este teléfono. */
+function SuCuenta() {
+  const cuenta = useSesion((s) => s.cuenta);
+  const [saliendo, setSaliendo] = useState(false);
+
+  const salir = async () => {
+    setSaliendo(true);
+    // Si el servidor no responde, la sesión se cierra igual en el teléfono.
+    await api.cerrarSesion().catch(() => undefined);
+    useBorrador.getState().reiniciar();
+    usePreferencias.getState().cambiar({ nombre: "" });
+    await useSesion.getState().salir();
+  };
+
+  const confirmar = () =>
+    Alert.alert("Cerrar sesión", "Sus espacios y diseños quedan guardados en su cuenta.", [
+      { text: "Cancelar", style: "cancel" },
+      { text: "Cerrar sesión", style: "destructive", onPress: () => void salir() },
+    ]);
+
+  return (
+    <Bloque titulo="Su cuenta">
+      {cuenta ? (
+        <View style={{ gap: espacio.s4 }}>
+          <Texto variante="bodyLg">{cuenta.nombre}</Texto>
+          <Texto variante="bodySm" color="ink600">{cuenta.correo}</Texto>
+        </View>
+      ) : null}
+      <Boton titulo="Cerrar sesión" icono={LogOut} variante="secundario" onPress={confirmar} cargando={saliendo} ancho />
+    </Bloque>
   );
 }
 
