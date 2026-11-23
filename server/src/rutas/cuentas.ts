@@ -5,7 +5,7 @@ import { ErrorApi } from "../errores.ts";
 import { prepararDispositivo } from "../lib/creditos.ts";
 import { abrirSesion, cerrarSesion, cifrarClave, claveCorrecta, vistaCuenta, type Cuenta } from "../lib/cuentas.ts";
 import { texto } from "../lib/validar.ts";
-import { cuenta, dispositivo } from "./dispositivo.ts";
+import { cuenta } from "./dispositivo.ts";
 
 export const cuentas = Router();
 
@@ -39,11 +39,10 @@ cuentas.post("/cuentas/registro", async (req, res) => {
   }
 
   const hash = await cifrarClave(clave);
-  // La cuenta adopta lo que ya hizo este teléfono. Si ese teléfono ya es de otra cuenta, empieza de cero.
-  const delTelefono = dispositivo(res);
-  const libre = !db.prepare("SELECT 1 FROM cuentas WHERE dispositivo = ?").get(delTelefono);
-  const propio = libre ? delTelefono : randomUUID();
-  if (!libre) prepararDispositivo(propio);
+  // Cada cuenta nueva empieza vacía (sin espacios ni diseños) y con sus créditos de bienvenida,
+  // aunque se cree desde un teléfono que ya se había usado.
+  const propio = randomUUID();
+  prepararDispositivo(propio);
 
   const token = transaccion(() => {
     const r = db.prepare("INSERT INTO cuentas (correo, nombre, clave_hash, dispositivo) VALUES (?, ?, ?, ?)").run(correo, nombre, hash, propio);
