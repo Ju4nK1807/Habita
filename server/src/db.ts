@@ -101,15 +101,15 @@ db.exec(`
     nombre       TEXT NOT NULL,
     clave_hash   TEXT NOT NULL,
     dispositivo  TEXT NOT NULL UNIQUE REFERENCES dispositivos(id),
-    creado       TEXT NOT NULL DEFAULT (datetime(now))
+    creado       TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
   -- Se guarda el hash del token, no el token: si alguien lee la base no puede usar las sesiones.
   CREATE TABLE IF NOT EXISTS sesiones (
     token_hash  TEXT PRIMARY KEY,
     cuenta_id   INTEGER NOT NULL REFERENCES cuentas(id) ON DELETE CASCADE,
-    creado      TEXT NOT NULL DEFAULT (datetime(now)),
-    ultimo_uso  TEXT NOT NULL DEFAULT (datetime(now))
+    creado      TEXT NOT NULL DEFAULT (datetime('now')),
+    ultimo_uso  TEXT NOT NULL DEFAULT (datetime('now'))
   );
 `);
 
