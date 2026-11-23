@@ -1,5 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 import { create } from "zustand";
+import { useBorrador } from "./borrador";
 
 const CLAVE_TOKEN = "habita.sesion";
 const CLAVE_CUENTA = "habita.cuenta";
@@ -27,6 +28,8 @@ export const useSesion = create<Sesion>()((set) => ({
   },
   entrar: async (token, cuenta) => {
     await Promise.all([SecureStore.setItemAsync(CLAVE_TOKEN, token), SecureStore.setItemAsync(CLAVE_CUENTA, JSON.stringify(cuenta))]);
+    // Lo que quedó a medias en el teléfono (foto, espacio elegido) era de otra sesión.
+    useBorrador.getState().reiniciar();
     set({ estado: "dentro", token, cuenta });
   },
   salir: async () => {
