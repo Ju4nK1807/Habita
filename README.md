@@ -45,7 +45,13 @@ npm install
 npx expo start         # escanear el QR con Expo Go
 ```
 
-## Sin login
+## Cuentas
 
-La app crea un identificador al abrirse por primera vez y lo envía en cada petición. Espacios,
-proyectos y créditos pertenecen a ese dispositivo.
+Para usar la app hay que crear una cuenta con nombre, correo y contraseña. Los espacios, diseños,
+proyectos y créditos pertenecen a la cuenta, así que se ven desde cualquier teléfono.
+
+- La contraseña se guarda cifrada con `scrypt`, nunca en texto.
+- La sesión es un token aleatorio; en el teléfono vive en el llavero (SecureStore) y en el servidor
+  solo se guarda su hash.
+- Tras 5 intentos fallidos con el mismo correo hay que esperar 5 minutos.
+- Al crear la cuenta, se queda con lo que ya se había hecho desde ese teléfono.
