@@ -92,6 +92,27 @@ const columnas = (tabla: string) => (db.prepare(`PRAGMA table_info(${tabla})`).a
 if (!columnas("propuestas").includes("en_espacio_url")) db.exec("ALTER TABLE propuestas ADD COLUMN en_espacio_url TEXT");
 if (!columnas("propuestas").includes("en_espacio_pos")) db.exec("ALTER TABLE propuestas ADD COLUMN en_espacio_pos REAL");
 if (!columnas("propuestas").includes("en_espacio_recorte_url")) db.exec("ALTER TABLE propuestas ADD COLUMN en_espacio_recorte_url TEXT");
+// Cuentas: cada una es dueña de un "dispositivo" (sus espacios, diseños y créditos). Al crear la
+// cuenta adopta los datos del teléfono desde el que se registró.
+db.exec(`
+  CREATE TABLE IF NOT EXISTS cuentas (
+    id           INTEGER PRIMARY KEY,
+    correo       TEXT NOT NULL UNIQUE,
+    nombre       TEXT NOT NULL,
+    clave_hash   TEXT NOT NULL,
+    dispositivo  TEXT NOT NULL UNIQUE REFERENCES dispositivos(id),
+    creado       TEXT NOT NULL DEFAULT (datetime(now))
+  );
+
+  -- Se guarda el hash del token, no el token: si alguien lee la base no puede usar las sesiones.
+  CREATE TABLE IF NOT EXISTS sesiones (
+    token_hash  TEXT PRIMARY KEY,
+    cuenta_id   INTEGER NOT NULL REFERENCES cuentas(id) ON DELETE CASCADE,
+    creado      TEXT NOT NULL DEFAULT (datetime(now)),
+    ultimo_uso  TEXT NOT NULL DEFAULT (datetime(now))
+  );
+`);
+
 if (!columnas("generaciones").includes("foto_ordenada_url")) db.exec("ALTER TABLE generaciones ADD COLUMN foto_ordenada_url TEXT");
 if (!columnas("generaciones").includes("recomendacion")) db.exec("ALTER TABLE generaciones ADD COLUMN recomendacion TEXT");
 if (!columnas("espacios").includes("marcas")) db.exec("ALTER TABLE espacios ADD COLUMN marcas TEXT");
