@@ -171,16 +171,16 @@ día).
 
 | | |
 |---|---|
-| 📷 **Análisis de la foto** | Tipo de espacio, estilo, paleta de colores, piso, luz y zona libre para el mueble. |
-| 🛋️ **Muebles reales** | Búsqueda en Éxito y Falabella; la IA elige los que combinan y descarta fundas o accesorios. |
-| 🖼️ **Así le quedaría** | El mueble de la tienda dibujado dentro de la foto, respetando paredes, piso, perspectiva y luz. |
-| 🧹 **Ordenar mi espacio** | Quita cajas, ropa y objetos sueltos de la foto; deja paredes, piso, enchufes y muebles grandes. |
-| 💬 **Ajustar con IA** | Cambios por chat (color, tamaño, posición) con historial y opción de deshacer. |
-| 💲 **Precio y enlace reales** | El precio de la tienda al momento de buscar, y el enlace a la página del producto. |
-| 📁 **Proyectos** | Agrupar muebles y ver el presupuesto sumado. |
-| 🎟️ **Créditos** | 10 de bienvenida; cada diseño cuesta 1 y se devuelve si falla o se cancela. |
-| 🌗 **Modo oscuro** | Tema claro, oscuro o el del sistema, con contraste AA en los dos. |
-| 👤 **Cuentas** | Registro e inicio de sesión; los datos se ven desde cualquier teléfono. |
+|  **Análisis de la foto** | Tipo de espacio, estilo, paleta de colores, piso, luz y zona libre para el mueble. |
+|  **Muebles reales** | Búsqueda en Éxito y Falabella; la IA elige los que combinan y descarta fundas o accesorios. |
+|  **Así le quedaría** | El mueble de la tienda dibujado dentro de la foto, respetando paredes, piso, perspectiva y luz. |
+|  **Ordenar mi espacio** | Quita cajas, ropa y objetos sueltos de la foto; deja paredes, piso, enchufes y muebles grandes. |
+|  **Ajustar con IA** | Cambios por chat (color, tamaño, posición) con historial y opción de deshacer. |
+|  **Precio y enlace reales** | El precio de la tienda al momento de buscar, y el enlace a la página del producto. |
+|  **Proyectos** | Agrupar muebles y ver el presupuesto sumado. |
+|  **Créditos** | 10 de bienvenida; cada diseño cuesta 1 y se devuelve si falla o se cancela. |
+|  **Modo oscuro** | Tema claro, oscuro o el del sistema, con contraste AA en los dos. |
+|  **Cuentas** | Registro e inicio de sesión; los datos se ven desde cualquier teléfono. |
 
 ---
 
