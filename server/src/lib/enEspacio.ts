@@ -74,8 +74,13 @@ type DatosEdicion = { tipoEn?: string; colorEn?: string; ubicacionEn?: string; a
  * respeta la perspectiva, las esquinas y la luz; el tamaño es aproximado (se le dan las medidas).
  */
 /** La foto del espacio lista para editar: orientada y del tamaño que pide el modelo. */
-export async function fotoParaEditar(fotoUrl: string) {
-  const foto = await sharp(await readFile(join(DIR_FOTOS, basename(fotoUrl)))).rotate().toBuffer();
+export function fotoParaEditar(fotoUrl: string) {
+  return imagenParaEditar(join(DIR_FOTOS, basename(fotoUrl)));
+}
+
+/** Cualquier imagen guardada (foto original u ordenada), orientada y del tamaño que pide el modelo. */
+export async function imagenParaEditar(ruta: string) {
+  const foto = await sharp(await readFile(ruta)).rotate().toBuffer();
   const { width: W = 1024, height: H = 1024 } = await sharp(foto).metadata();
   const { ancho, alto } = medidaEdicion(W, H);
   return { imagen: await sharp(foto).resize(ancho, alto, { fit: "fill" }).jpeg({ quality: 90 }).toBuffer(), ancho, alto };

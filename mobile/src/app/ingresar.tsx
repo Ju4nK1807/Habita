@@ -5,14 +5,19 @@ import { LogIn } from "lucide-react-native";
 import { api, ErrorApi } from "@/servicios/api";
 import { useSesion } from "@/store/sesion";
 import { usePreferencias } from "@/store/preferencias";
-import { espacio, margen } from "@/theme/tokens";
+import { useTema } from "@/theme/tema";
+import { espacio, margen, radio } from "@/theme/tokens";
 import { Pantalla } from "@/componentes/Pantalla";
 import { Texto } from "@/componentes/Texto";
 import { CampoTexto } from "@/componentes/CampoTexto";
 import { Boton } from "@/componentes/Boton";
 import { Aviso } from "@/componentes/Aviso";
+import { Aparecer } from "@/componentes/Aparecer";
+import { EscenaCuarto } from "@/componentes/EscenaCuarto";
+import { FrasesRotativas } from "@/componentes/FrasesRotativas";
 
 export default function Ingresar() {
+  const { c } = useTema();
   const entrar = useSesion((s) => s.entrar);
   const [correo, setCorreo] = useState("");
   const [clave, setClave] = useState("");
@@ -39,43 +44,54 @@ export default function Ingresar() {
 
   return (
     <Pantalla bordes={["top", "bottom"]} teclado>
-      <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: margen.lateral, gap: margen.secciones }}>
-        <View style={{ gap: espacio.s8 }}>
+      <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1, padding: margen.lateral, gap: margen.secciones }}>
+        <Aparecer style={{ gap: espacio.s4 }}>
           <Texto variante="displayLg" accessibilityRole="header">Habita</Texto>
-          <Texto variante="bodyLg" color="ink600">Muebles reales que combinan con su espacio. Inicie sesión para ver sus diseños.</Texto>
-        </View>
+          <Texto variante="bodyLg" color="ink600">Vea cómo quedan muebles reales en su espacio antes de comprarlos.</Texto>
+        </Aparecer>
 
-        <View style={{ gap: espacio.s16 }}>
-          <CampoTexto
-            etiqueta="Correo"
-            value={correo}
-            onChangeText={setCorreo}
-            placeholder="nombre@correo.com"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            autoComplete="email"
-            textContentType="emailAddress"
-          />
-          <CampoTexto
-            etiqueta="Contraseña"
-            value={clave}
-            onChangeText={setClave}
-            secureTextEntry
-            autoCapitalize="none"
-            autoComplete="current-password"
-            textContentType="password"
-            onSubmitEditing={ingresar}
-            returnKeyType="go"
-          />
-        </View>
+        <Aparecer retraso={100}>
+          <EscenaCuarto />
+        </Aparecer>
 
-        {error ? <Aviso tipo={error.sinConexion ? "sinConexion" : "error"} mensaje={error.message} /> : null}
+        <Aparecer retraso={200}>
+          <FrasesRotativas />
+        </Aparecer>
 
-        <View style={{ gap: espacio.s12 }}>
-          <Boton titulo="Iniciar sesión" icono={LogIn} onPress={ingresar} cargando={enviando} deshabilitado={!!motivo} motivo={motivo} ancho />
-          <Boton titulo="Crear una cuenta" variante="texto" onPress={() => router.push("/registro")} ancho />
-        </View>
+        <Aparecer retraso={300}>
+          <View style={{ gap: espacio.s16, padding: margen.tarjeta, borderRadius: radio.tarjeta, borderWidth: 1, borderColor: c.border200, backgroundColor: c.surface100 }}>
+            <Texto variante="titleMd" accessibilityRole="header">Inicie sesión</Texto>
+            <CampoTexto
+              etiqueta="Correo"
+              value={correo}
+              onChangeText={setCorreo}
+              placeholder="nombre@correo.com"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoComplete="email"
+              textContentType="emailAddress"
+            />
+            <CampoTexto
+              etiqueta="Contraseña"
+              value={clave}
+              onChangeText={setClave}
+              secureTextEntry
+              autoCapitalize="none"
+              autoComplete="current-password"
+              textContentType="password"
+              onSubmitEditing={ingresar}
+              returnKeyType="go"
+            />
+            {error ? <Aviso tipo={error.sinConexion ? "sinConexion" : "error"} mensaje={error.message} /> : null}
+            <Boton titulo="Iniciar sesión" icono={LogIn} onPress={ingresar} cargando={enviando} deshabilitado={!!motivo} motivo={motivo} ancho />
+          </View>
+        </Aparecer>
+
+        <Aparecer retraso={400} style={{ alignItems: "center", gap: espacio.s4 }}>
+          <Texto variante="bodyMd" color="ink600">¿Es nuevo en Habita?</Texto>
+          <Boton titulo="Crear una cuenta" variante="texto" onPress={() => router.push("/registro")} />
+        </Aparecer>
       </ScrollView>
     </Pantalla>
   );

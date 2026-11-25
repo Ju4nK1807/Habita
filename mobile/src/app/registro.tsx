@@ -5,18 +5,22 @@ import { UserPlus } from "lucide-react-native";
 import { api, ErrorApi } from "@/servicios/api";
 import { useSesion } from "@/store/sesion";
 import { usePreferencias } from "@/store/preferencias";
-import { espacio, margen } from "@/theme/tokens";
+import { useTema } from "@/theme/tema";
+import { espacio, margen, radio } from "@/theme/tokens";
 import { Pantalla } from "@/componentes/Pantalla";
 import { BarraSuperior } from "@/componentes/BarraSuperior";
 import { Texto } from "@/componentes/Texto";
 import { CampoTexto } from "@/componentes/CampoTexto";
 import { Boton } from "@/componentes/Boton";
 import { Aviso } from "@/componentes/Aviso";
+import { Aparecer } from "@/componentes/Aparecer";
+import { EscenaCuarto } from "@/componentes/EscenaCuarto";
 
 const CLAVE_MIN = 8;
 const CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export default function Registro() {
+  const { c } = useTema();
   const entrar = useSesion((s) => s.entrar);
   const [nombre, setNombre] = useState("");
   const [correo, setCorreo] = useState("");
@@ -56,11 +60,18 @@ export default function Registro() {
     <Pantalla bordes={["top", "bottom"]} teclado>
       <BarraSuperior variante="compacta" titulo="Crear cuenta" atras={() => (router.canGoBack() ? router.back() : router.replace("/ingresar"))} />
       <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: margen.lateral, gap: margen.secciones }}>
-        <Texto variante="bodyLg" color="ink600">
-          Con su cuenta guarda sus espacios, diseños y proyectos, y los ve desde cualquier teléfono.
-        </Texto>
+        <Aparecer>
+          <EscenaCuarto alto={168} />
+        </Aparecer>
 
-        <View style={{ gap: espacio.s16 }}>
+        <Aparecer retraso={100}>
+          <Texto variante="bodyLg" color="ink600">
+            Con su cuenta guarda sus espacios, diseños y proyectos, y los ve desde cualquier teléfono.
+          </Texto>
+        </Aparecer>
+
+        <Aparecer retraso={200}>
+        <View style={{ gap: espacio.s16, padding: margen.tarjeta, borderRadius: radio.tarjeta, borderWidth: 1, borderColor: c.border200, backgroundColor: c.surface100 }}>
           <CampoTexto etiqueta="Nombre" value={nombre} onChangeText={setNombre} placeholder="Cómo quiere que le saludemos" autoComplete="name" textContentType="name" max={40} />
           <CampoTexto
             etiqueta="Correo"
@@ -100,11 +111,10 @@ export default function Registro() {
             onSubmitEditing={crear}
             returnKeyType="go"
           />
+          {error ? <Aviso tipo={error.sinConexion ? "sinConexion" : "error"} mensaje={error.message} /> : null}
+          <Boton titulo="Crear cuenta" icono={UserPlus} onPress={crear} cargando={enviando} deshabilitado={!!motivo} motivo={motivo} ancho />
         </View>
-
-        {error ? <Aviso tipo={error.sinConexion ? "sinConexion" : "error"} mensaje={error.message} /> : null}
-
-        <Boton titulo="Crear cuenta" icono={UserPlus} onPress={crear} cargando={enviando} deshabilitado={!!motivo} motivo={motivo} ancho />
+        </Aparecer>
       </ScrollView>
     </Pantalla>
   );
